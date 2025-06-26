@@ -1,0 +1,10 @@
+PRESENCES:
+  - "Mais de {users} usuários!"
+
+RSG_1_16: "https://www.speedrun.com/api/v1/leaderboards/j1npme6p/category/mkeyl926?var-r8rg67rn=21d4zvp1"
+SSG_1_16: "https://www.speedrun.com/api/v1/leaderboards/j1npme6p/category/mkeyl926?var-wl33kewl=4qye4731"
+RANKED: "https://mcsrranked.com/api/leaderboard?country=br"
+
+link_twitch: "https://www.twitch.tv/minecraftspeedrunbrasil"
+link_youtube: "https://www.youtube.com/@MinecraftSpeedrunBrasil"
+link_tiktok: "https://vm.tiktok.com/ZMkWt761e/"

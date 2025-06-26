@@ -1,0 +1,49 @@
+{
+  "language_name": "Português",
+  "comandos": {
+    "top": {
+      "rsg": "Top RSG 1.16+ Brasil",
+      "ssg": "Top SSG 1.16+ Brasil",
+      "ranked": "Top Ranked Brasil"
+    },
+    "twitch": "Twitch do Minecraft Speedrunning Brasil",
+    "youtube": "YouTube do Minecraft Speedrunning Brasil",
+    "tiktok": "TikTok do Minecraft Speedrunning Brasil",
+    "ajuda": "Mostra a lista de comandos disponíveis",
+    "embed": "Envie uma embed customizada para um canal.",
+    "say": "Faça o bot enviar uma mensagem personalizada em um canal.",
+    "set": {
+      "group": "Editar informações dinâmicas do bot.",
+      "btrl": {
+        "desc": "Editar informações da embed da BTRL",
+        "titulo": "Título da embed",
+        "descricao": "Descrição da embed (permitido Markdown)",
+        "thumbnail": "URL da thumbnail (opcional)",
+        "imagem": "URL da imagem grande (opcional)"
+      },
+      "youtube": {
+        "desc": "Editar link do YouTube do Minecraft Speedrunning Brasil",
+        "link": "Novo link do canal do YouTube"
+      },
+      "twitch": {
+        "desc": "Editar link da Twitch do Minecraft Speedrunning Brasil",
+        "link": "Novo link do canal da Twitch"
+      },
+      "tiktok": {
+        "desc": "Editar link do TikTok do Minecraft Speedrunning Brasil",
+        "link": "Novo link do TikTok"
+      }
+    },
+    "mcsr": {
+      "group": "Comandos relacionados ao Minecraft Speedrun Ranked e configuração.",
+      "config": "Tutoriais e utilitários para configuração do Minecraft Speedrun.",
+      "mapas": "Links para mapas de prática de speedrun.",
+      "overworld": "Tutoriais para estratégias no Overworld.",
+      "bastions": "Tutoriais sobre Bastions para speedrun.",
+      "fortalezas": "Tutoriais sobre Fortalezas para speedrun.",
+      "stronghold": "Tutoriais sobre Stronghold para speedrun.",
+      "end": "Tutoriais sobre estratégias no End para speedrun.",
+      "outros": "Tutoriais e vídeos diversos sobre speedrun de Minecraft."
+    }
+  }
+}

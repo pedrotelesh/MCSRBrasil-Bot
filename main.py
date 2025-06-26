@@ -324,9 +324,17 @@ async def set_tiktok(ctx, link: str):
 
 class HelpView(discord.ui.View):
     def __init__(self, ctx):
-        super().__init__(timeout=None)
+        super().__init__(timeout=300)
         self.ctx = ctx
         self.message = None
+        self.is_admin = ctx.author.guild_permissions.administrator if hasattr(ctx.author, 'guild_permissions') else False
+
+    async def on_timeout(self):
+        for item in self.children:
+            if isinstance(item, discord.ui.Button):
+                item.disabled = True
+        if self.message:
+            await self.message.edit(view=self)
 
     async def update_embed(self, category, interaction):
         try:
@@ -370,7 +378,7 @@ class HelpView(discord.ui.View):
                 value=f"</btrl:1387812113787129962> - {language['comandos']['youtube']}\n",
                 inline=False,
             )
-        elif category == "Moderação - Comandos":
+        elif category == "Moderação - Comandos" and self.is_admin:
             embed.add_field(
                 name="> **Total de comandos nesta categoria:** `6`.\n",
                 value=f"</say:1387812113787129965> - {language['comandos']['say']}\n"
@@ -437,7 +445,10 @@ class HelpView(discord.ui.View):
     async def moderation_button(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ):
-        await self.update_embed("Moderação - Comandos", interaction)
+        if self.is_admin:
+            await self.update_embed("Moderação - Comandos", interaction)
+        else:
+            await interaction.response.send_message("Aba de moderação disponível apenas para administradores.", ephemeral=True)
 
     @discord.ui.button(
         label="Voltar", style=discord.ButtonStyle.danger, custom_id="back_button"

@@ -4,3 +4,4 @@ aiohttp
 PyYAML
 ujson
 dotenv
+requests

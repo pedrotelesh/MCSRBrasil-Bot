@@ -1,4 +1,3 @@
-import asyncio
 import os
 from datetime import datetime
 import aiohttp
@@ -77,7 +76,7 @@ async def top_rsg_command(ctx):
     try:
         await ctx.defer()
         url = config.config["RSG_1_16"]
-        results = get_top_runs(url)
+        results = await get_top_runs(url)
         embed = discord.Embed(title="Top RSG 1.16+ Brasil", color=0x00aaff)
         for i, (time, username, run_link, user_link) in enumerate(results[:10], 1):
             embed.add_field(
@@ -95,7 +94,7 @@ async def top_ssg_command(ctx):
     try:
         await ctx.defer()
         url = config.config["SSG_1_16"]
-        results = get_top_runs(url)
+        results = await get_top_runs(url)
         embed = discord.Embed(title="Top SSG 1.16+ Brasil", color=0x00aaff)
         for i, (time, username, run_link, user_link) in enumerate(results[:10], 1):
             embed.add_field(

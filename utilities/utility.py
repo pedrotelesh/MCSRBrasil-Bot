@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from ujson import loads
 import json
 import os
+import aiohttp
 
 month = [
     "Jan",
@@ -77,13 +78,13 @@ def userdata(userid):
         userdata = loads(url.read().decode())  # gets information from speedrun.com api
         return userdata["data"]  # returns the data dictionary of the user
     
-def get_top_runs(url):
-    import json
+async def get_top_runs(url):
     with open("users.json", "r", encoding="utf-8") as f:
         users_data = json.load(f)["users"]
     id_to_name = {user["id"]: user["name"] for user in users_data}
-    import requests
-    data = requests.get(url).json()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            data = await resp.json()
     runs = data["data"]["runs"]
     results = []
     for run in runs:

@@ -1,3 +1,4 @@
+
 # 🇧🇷 MCSR Brasil Discord Bot
 
 Um bot completo para a comunidade brasileira de Minecraft Speedrunning! Feito para facilitar divulgação, tutoriais, rankings, integração com APIs e administração de links de redes sociais.
@@ -8,17 +9,21 @@ Um bot completo para a comunidade brasileira de Minecraft Speedrunning! Feito pa
 ## ✨ Funcionalidades
 
 - **Comandos de Ranking:**
-  - `/top rsg`, `/top ssg`, `/top ranked` — Rankings brasileiros (speedrun.com e mcsrranked.com)
+  - `/top rsg`, `/top ssg`, `/top ranked` — Rankings brasileiros (speedrun.com, Google Sheets API e mcsrranked.com), com emotes de pódio, bastion, seed e tempo personalizados.
 - **Divulgação de Redes Sociais:**
-  - `/youtube`, `/twitch`, `/tiktok` — Embeds com links dinâmicos e botões
+  - `/youtube`, `/twitch`, `/tiktok` — Embeds com links dinâmicos e botões customizados
 - **Tutoriais e Utilidades:**
-  - `/mcsr` com subcomandos para mapas, estratégias, utilidades e links úteis
+  - `/mcsr` com subcomandos para mapas, estratégias, utilidades, links úteis e playlists
 - **Administração Dinâmica:**
   - `/set` para editar links e informações de eventos (YouTube, Twitch, TikTok, BTRL)
 - **Padronização Visual:**
-  - Embeds modernas com footer automático e avatar do bot
+  - Embeds modernas com footer automático, avatar do bot e uso de emojis customizados
 - **Centralização de textos:**
   - Todas as descrições e textos em `lang/lang.pt-BR.json`
+- **Paginação interativa:**
+  - Visualização de rankings com botões de navegação
+- **Internacionalização:**
+  - Suporte a múltiplos idiomas via arquivos de linguagem
 
 ## 🚀 Instalação
 
@@ -42,22 +47,26 @@ Um bot completo para a comunidade brasileira de Minecraft Speedrunning! Feito pa
    python main.py
    ```
 
-## 📋 Exemplo de Comandos
+## 📋 Exemplos de Comandos
 
-- `/top rsg` — Mostra o ranking brasileiro de Random Seed Glitchless
+- `/top rsg` — Mostra o ranking brasileiro de Random Seed Glitchless (com bastion e seed)
+- `/top ssg` — Mostra o ranking brasileiro de Set Seed Glitchless
+- `/top ranked` — Ranking brasileiro do MCSR Ranked
 - `/mcsr mapas` — Links para mapas de prática
 - `/set youtube <link>` — Atualiza o link do canal do YouTube
+- `/ajuda` — Mostra todos os comandos do bot com navegação por botões
 
 ## 🛠️ Estrutura do Projeto
 
 ```
 ├── main.py
 ├── cogs/
-│   ├── topruns.py
+│   ├── btrl.py
+│   ├── embed.py
+│   ├── say.py
+│   ├── tiktok.py
 │   ├── twitch.py
 │   ├── youtube.py
-│   ├── tiktok.py
-│   └── btrl.py
 ├── utilities/
 │   ├── utility.py
 │   ├── config_loader.py
@@ -65,10 +74,10 @@ Um bot completo para a comunidade brasileira de Minecraft Speedrunning! Feito pa
 ├── lang/
 │   └── lang.pt-BR.json
 ├── btrl.json
-├── yt_tt_links.json
-├── users.json
+├── links.json
 ├── config.yml
-└── requirements.txt
+├── requirements.txt
+└── README.md
 ```
 
 ## 📦 Requisitos
@@ -90,6 +99,4 @@ Este projeto é open-source e está sob a licença MIT.
 
 ---
 
-> Feito com ❤️ para a comunidade de Minecraft Speedrunning Brasil!
-<BR>
-> THE BEST.
+> Feito com ❤️ para a comunidade de Minecraft Speedrunning Brasil! THE BEST.

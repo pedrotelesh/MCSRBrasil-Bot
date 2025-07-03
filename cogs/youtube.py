@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import logging
 
-from utilities.utility import load_yt_tt_links
+from utilities.utility import load_links
 import utilities.config_loader as config
 
 language = config.load_current_language()
@@ -20,7 +20,7 @@ class YoutubeCog(commands.Cog):
         try:
             if hasattr(ctx, 'interaction') and ctx.interaction is not None:
                 await ctx.defer()
-            links = load_yt_tt_links()
+            links = load_links()
             youtube_link = links.get("youtube")
             if not youtube_link:
                 await ctx.send("Nenhum link do YouTube foi configurado ainda! Use /set youtube para definir.", ephemeral=True)

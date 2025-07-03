@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import logging
 
-from utilities.utility import load_yt_tt_links
+from utilities.utility import load_links
 import utilities.config_loader as config
 
 language = config.load_current_language()
@@ -20,7 +20,7 @@ class TiktokCog(commands.Cog):
         try:
             if hasattr(ctx, 'interaction') and ctx.interaction is not None:
                 await ctx.defer()
-            links = load_yt_tt_links()
+            links = load_links()
             tiktok_link = links.get("tiktok")
             if not tiktok_link:
                 await ctx.send("Nenhum link do TikTok foi configurado ainda! Use /set tiktok para definir.", ephemeral=True)

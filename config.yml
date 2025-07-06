@@ -4,3 +4,5 @@ PRESENCES:
 RSG_1_16: "https://script.google.com/macros/s/AKfycbztdxz4Cm5x03Xs_1mdX9Uxkf4g51FqohS-SqoAn28CPuvMAAJgdJsYhstp57PogdY4/exec?action=getrsg116"
 SSG_1_16: "https://script.google.com/macros/s/AKfycbztdxz4Cm5x03Xs_1mdX9Uxkf4g51FqohS-SqoAn28CPuvMAAJgdJsYhstp57PogdY4/exec?action=getssg116"
 RANKED: "https://mcsrranked.com/api/leaderboard?country=br"
+
+RUNNERS_API: "https://script.google.com/macros/s/AKfycbztdxz4Cm5x03Xs_1mdX9Uxkf4g51FqohS-SqoAn28CPuvMAAJgdJsYhstp57PogdY4/exec?action=getrunners"

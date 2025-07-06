@@ -5,6 +5,12 @@ import json
 import os
 import aiohttp
 import urllib.parse
+from cachetools import TTLCache
+
+RSG_CACHE = TTLCache(maxsize=1024, ttl=600)
+SSG_CACHE = TTLCache(maxsize=1024, ttl=600)
+
+from utilities import config_loader as config
 
 month = [
     "Jan",
@@ -93,8 +99,37 @@ async def fetch_google_script_json(url):
                 return await resp.json(content_type=None)
 
 async def get_top_runs(tipo: str):
+    runners_url = None
+    try:
+        runners_url = config.config.get('RUNNERS_API')
+    except Exception:
+        pass
+    runners_data = []
+    runners_map = {}
+    if runners_url:
+        try:
+            runners_data = await fetch_google_script_json(runners_url)
+        except Exception:
+            runners_data = []
+    if isinstance(runners_data, dict) and 'runners' in runners_data:
+        runners_data = runners_data['runners']
+    for entry in runners_data:
+        if len(entry) >= 4:
+            nome_runner, estado, cor, runner_id = entry[:4]
+            runners_map[nome_runner.lower()] = runner_id
     url = tipo
-    data = await fetch_google_script_json(url)
+    cache = None
+    if 'getrsg116' in tipo:
+        cache = RSG_CACHE
+    elif 'getssg116' in tipo:
+        cache = SSG_CACHE
+
+    if cache is not None and tipo in cache:
+        data = cache[tipo]
+    else:
+        data = await fetch_google_script_json(url)
+        if cache is not None:
+            cache[tipo] = data
     results = []
     runs = data["runs"] if isinstance(data, dict) and "runs" in data else data
     parsed = urllib.parse.urlparse(url)
@@ -112,6 +147,9 @@ async def get_top_runs(tipo: str):
     emote_clock = '<:clock:1390146877009170483>'
     emote_seed = '<:seed:1390146860697784370>'
 
+    if cache is not None and tipo not in cache:
+        cache[tipo] = data
+
     for idx, run in enumerate(runs):
         place_emote = top_emotes[idx] if idx < 3 else f'#{idx+1}'
         if is_rsg:
@@ -121,11 +159,22 @@ async def get_top_runs(tipo: str):
                 nome, tempo, bastion, data_run, verificada, seed, video = run
                 comentario = ''
             else:
-                print('Erro ao desempacotar RSG: formato inesperado', run)
+                print('[ERRO] Erro ao desempacotar RSG: formato inesperado', run)
                 continue
+            runner_id = runners_map.get(nome.lower())
+            username_str = None
+            profile_url = None
+            if runner_id:
+                try:
+                    username_str = username(runner_id)
+                    if username_str:
+                        profile_url = f"https://www.speedrun.com/users/{username_str}"
+                except Exception as e:
+                    print(f"[ERRO] Exception ao buscar username/profile: {e}")
             results.append({
                 "place": place_emote,
                 "nome": nome,
+                "profile": profile_url,
                 "tempo": tempo,
                 "bastion": bastion,
                 "data": data_run,
@@ -142,11 +191,22 @@ async def get_top_runs(tipo: str):
                 nome, tempo, seed_name, data_run, verificada, video = run
                 comentario = ''
             else:
-                print('Erro ao desempacotar SSG: formato inesperado', run)
+                print('[ERRO] Erro ao desempacotar SSG: formato inesperado', run)
                 continue
+            runner_id = runners_map.get(nome.lower())
+            username_str = None
+            profile_url = None
+            if runner_id:
+                try:
+                    username_str = username(runner_id)
+                    if username_str:
+                        profile_url = f"https://www.speedrun.com/users/{username_str}"
+                except Exception as e:
+                    print(f"[ERRO] Exception ao buscar username/profile: {e}")
             results.append({
                 "place": place_emote,
                 "nome": nome,
+                "profile": profile_url,
                 "tempo": tempo,
                 "seed_name": seed_name,
                 "data": data_run,
@@ -155,7 +215,7 @@ async def get_top_runs(tipo: str):
                 "comentario": comentario
             })
         else:
-            print('Tipo de run desconhecido para parsing:', url)
+            print('[ERRO] Tipo de run desconhecido para parsing:', url)
             continue
     return results
 

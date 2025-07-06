@@ -512,14 +512,19 @@ class TopPaginationView(discord.ui.View):
             verifs = []
             for idx, run in enumerate(self.results[start:end]):
                 pos = start + idx
-                # Top 3 com emote, resto com #n
                 place = top_emotes[pos] if pos < 3 else f"#{pos+1}"
-                nomes.append(f"**{place}** - {run['nome']}")
+                nome = run['nome']
+                profile = run.get('profile')
+                if profile and isinstance(profile, str) and profile.startswith('http'):
+                    nome_md = f"[{nome}]({profile})"
+                else:
+                    nome_md = f"{nome}"
+                nomes.append(f"**{place}** - {nome_md}")
                 video = run.get('video')
                 if video and isinstance(video, str) and video.strip() and video.strip().lower() != 'n/a' and video.strip().startswith('http'):
                     tempos.append(f"{emote_clock} [ `{run['tempo']}` ]({video.strip()})")
                 else:
-                    tempos.append(f"`{run['tempo']}`")
+                    tempos.append(f"{emote_clock} `{run['tempo']}`")
                 if self.tipo == 'rsg':
                     bastion = str(run.get('bastion', '')).strip()
                     bastions.append(f"{emote_gold_block} `{bastion}`")

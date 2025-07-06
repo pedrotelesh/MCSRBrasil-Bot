@@ -68,22 +68,26 @@ def realtime(time):
         + ((str(ms) + "ms") * (ms != "000"))
     )  # src formatting
 
-def userid(username):
-    with urlopen("https://www.speedrun.com/api/v1/users/" + username) as url:
-        userdata = loads(url.read().decode())
-        return userdata["data"]["id"]
-    
-def username(userid):
-    with urlopen("https://www.speedrun.com/api/v1/users/" + userid) as url:
-        userdata = loads(url.read().decode())  # gets information from speedrun.com api
-        return userdata["data"]["names"][
-            "international"
-        ]  # reads the international name from api
-    
-def userdata(userid):
-    with urlopen("https://www.speedrun.com/api/v1/users/" + userid) as url:
-        userdata = loads(url.read().decode())  # gets information from speedrun.com api
-        return userdata["data"]  # returns the data dictionary of the user
+async def userid(username):
+    url = f"https://www.speedrun.com/api/v1/users/{username}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+            return data["data"]["id"]
+
+async def username(userid):
+    url = f"https://www.speedrun.com/api/v1/users/{userid}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+            return data['data']['names']['international']
+
+async def userdata(userid):
+    url = f"https://www.speedrun.com/api/v1/users/{userid}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+            return data["data"]
 
 async def fetch_google_script_json(url):
     async with aiohttp.ClientSession() as session:
@@ -150,6 +154,33 @@ async def get_top_runs(tipo: str):
     if cache is not None and tipo not in cache:
         cache[tipo] = data
 
+    runner_ids_needed = set()
+    nome_to_runnerid = {}
+    for run in runs:
+        if is_rsg:
+            nome = run[0]
+        elif is_ssg:
+            nome = run[0]
+        else:
+            continue
+        runner_id = runners_map.get(nome.lower())
+        if runner_id:
+            runner_ids_needed.add(runner_id)
+            nome_to_runnerid[nome] = runner_id
+
+    import asyncio
+    async def username_safe(rid):
+        try:
+            return await username(rid)
+        except Exception as e:
+            print(f"[ERRO] Exception ao buscar username/profile: {e}")
+            return None
+    id_to_username = {}
+    if runner_ids_needed:
+        usernames_list = await asyncio.gather(*(username_safe(rid) for rid in runner_ids_needed))
+        for rid, uname in zip(runner_ids_needed, usernames_list):
+            id_to_username[rid] = uname
+
     for idx, run in enumerate(runs):
         place_emote = top_emotes[idx] if idx < 3 else f'#{idx+1}'
         if is_rsg:
@@ -162,15 +193,8 @@ async def get_top_runs(tipo: str):
                 print('[ERRO] Erro ao desempacotar RSG: formato inesperado', run)
                 continue
             runner_id = runners_map.get(nome.lower())
-            username_str = None
-            profile_url = None
-            if runner_id:
-                try:
-                    username_str = username(runner_id)
-                    if username_str:
-                        profile_url = f"https://www.speedrun.com/users/{username_str}"
-                except Exception as e:
-                    print(f"[ERRO] Exception ao buscar username/profile: {e}")
+            username_str = id_to_username.get(runner_id) if runner_id else None
+            profile_url = f"https://www.speedrun.com/users/{username_str}" if username_str else None
             results.append({
                 "place": place_emote,
                 "nome": nome,
@@ -184,7 +208,6 @@ async def get_top_runs(tipo: str):
                 "comentario": comentario
             })
         elif is_ssg:
-            # SSG: 7 ou 6 colunas
             if len(run) == 7:
                 nome, tempo, seed_name, data_run, verificada, video, comentario = run
             elif len(run) == 6:
@@ -194,15 +217,8 @@ async def get_top_runs(tipo: str):
                 print('[ERRO] Erro ao desempacotar SSG: formato inesperado', run)
                 continue
             runner_id = runners_map.get(nome.lower())
-            username_str = None
-            profile_url = None
-            if runner_id:
-                try:
-                    username_str = username(runner_id)
-                    if username_str:
-                        profile_url = f"https://www.speedrun.com/users/{username_str}"
-                except Exception as e:
-                    print(f"[ERRO] Exception ao buscar username/profile: {e}")
+            username_str = id_to_username.get(runner_id) if runner_id else None
+            profile_url = f"https://www.speedrun.com/users/{username_str}" if username_str else None
             results.append({
                 "place": place_emote,
                 "nome": nome,
